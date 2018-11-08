@@ -3,35 +3,7 @@ var uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: function(authResult, redirectUrl) {
       var user = authResult.user;
-      const name = user.displayName
-      const email = user.email
-      const firebase_user_id = user.uid
-
-        // pass data to create new account
-        $.post(
-          "/authentication",
-          {
-            uid: firebase_user_id,
-            username: name,
-            email: email
-          },
-          data => {
-            // if result is fail, stop execution and show error message
-            if (data.result == "fail") {
-
-              $("#registerErrorMessage").text(
-                "You have an account with this google account"
-              )
-              $("#registerErrorMessage").show()
-
-              return
-            }
-            // now ready to go to home page
-            window.location.replace("/")
-          }
-        ).fail(error => {
-          console.log(error.message)
-        })
+      verifyTokenAndGoToHome(user)
       return false;
     },
     signInFailure: function(error) {
@@ -73,41 +45,6 @@ var uiConfig = {
 };
 
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
-// The start method will wait until the DOM is loaded.
-ui.start('#firebaseui-auth-container', uiConfig);
-
-function registerWithEmailAndPassword(name, email, password) {
-  firebase
-    .auth()
-    .createUserWithEmailAndPassword(email, password)
-    .then(data => {
-      const firebase_user_id = data.user.uid
-
-      // pass data to local database to create new account
-      $.post("/authentication",
-        {
-          uid: firebase_user_id,
-          username: name,
-          email: email
-        },
-        data => {
-          // now ready to go to home page
-          window.location.replace("/")
-          console.log(data);
-        }
-      ).fail(error => {
-        console.log(error.message)
-      })
-    })
-    .catch(function(error) {
-      const errorMessage = error.message
-
-      // set the error Message and show it
-      $("#registerErrorMessage").text(errorMessage)
-      $("#registerErrorMessage").show()
-      console.log(errorMessage)
-    })
-}
 
 function signInWithEmailAndPassword(email, password) {
   firebase.auth()
@@ -156,7 +93,7 @@ function verifyTokenAndGoToHome(user) {
             return
           }
           // now ready to go to home page
-          window.location.replace("/")
+          window.location.replace("/authenticaton/home")
         }).fail(function(error) {
           // Handle error
           console.log("decode error")
@@ -169,7 +106,7 @@ function verifyTokenAndGoToHome(user) {
     })
 }
 
-$(document).ready(function() {
+$(document).on('turbolinks:load', function() {
   // login
   $("#loginForm").submit(event => {
     // Stop the browser from submitting the form.
@@ -183,42 +120,6 @@ $(document).ready(function() {
 
     signInWithEmailAndPassword(email, password)
   })
-
-  // create new user
-  $("#registerForm").submit(event => {
-    // Stop the browser from submitting the form.
-    event.preventDefault()
-    // hide error message
-    $("#registerErrorMessage").hide()
-
-    const name = event.target.name.value
-    const email = event.target.email.value
-    const password = event.target.password.value
-
-    registerWithEmailAndPassword(name, email, password)
-  })
-
-  // login with google account (google login button)
-  $("#google_login").click(() => {
-    // hide error message
-    $("#loginErrorMessage").hide()
-
-    const provider = new firebase.auth.GoogleAuthProvider()
-
-    firebase
-      .auth()
-      .signInWithPopup(provider)
-      .then(function(result) {
-        // The signed-in user info.
-        const user = result.user
-
-        verifyTokenAndGoToHome(user)
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        var errorMessage = error.message
-
-        console.log(errorMessage)
-      })
-  })
+  // The start method will wait until the DOM is loaded.
+  ui.start('#firebaseui-auth-container', uiConfig);
 })

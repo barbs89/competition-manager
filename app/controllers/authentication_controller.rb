@@ -59,7 +59,6 @@ class AuthenticationController < ApplicationController
       # return fail result and error message
       return render json: {"result"=> "fail", "message" => e}
     end
-
   end
 
 end

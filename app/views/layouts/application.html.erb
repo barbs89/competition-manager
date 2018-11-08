@@ -15,6 +15,10 @@
     <!-- Firebase locally stored scripts -->
     <%= javascript_include_tag('config.js') %>
 
+    <!-- Firebase local and external css files -->
+    <link type="text/scss" rel="stylesheet" src="/app/assets/stylesheets/firebase.scss" />
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.4.1/firebaseui.css" />
+
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
