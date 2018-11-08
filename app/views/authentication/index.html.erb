@@ -1,0 +1,23 @@
+<h1>Login</h1>
+
+<form id="loginForm" style="width:40%; margin:0 auto;">
+    <img class="mb-4" src="" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Log in</h1>
+
+    <div id="loginErrorMessage" style="display:none;" class="alert alert-danger"> </div>
+
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" name="password" id="inputPassword" class="form-control mb-3" placeholder="Password" required>
+   
+    <button class="btn btn-primary mb-3" type="submit">Log in</button>
+
+    <div>
+    <%= link_to "Sign up", new_authentication_path %>
+    </div>
+
+</form>
+
+<%= javascript_include_tag 'authentication.js' %>
