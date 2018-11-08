@@ -73,8 +73,6 @@ var uiConfig = {
 };
 
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
-// The start method will wait until the DOM is loaded.
-ui.start('#firebaseui-auth-container', uiConfig);
 
 function registerWithEmailAndPassword(name, email, password) {
   firebase
@@ -107,84 +105,49 @@ function registerWithEmailAndPassword(name, email, password) {
       $("#registerErrorMessage").show()
       console.log(errorMessage)
     })
-}
-
-function signInWithEmailAndPassword(email, password) {
-  firebase.auth()
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(email, password)
-    .then(data => {
-      const user = data.user
-
-      verifyTokenAndGoToHome(user)
-    })
-    .catch(function(error) {
-      var errorMessage = error.message
-
-      // set the error Message and show it
-      $("#loginErrorMessage").text(errorMessage)
-      $("#loginErrorMessage").show()
-      console.log(errorMessage)
-    })
-}
+  }
 
 function verifyTokenAndGoToHome(user) {
   // get user token form firebase
-  user
-    .getIdToken(/* forceRefresh */ true)
-    .then(idToken => {
-      // Send token to your backend via HTTPS
-      $.post("/login", { token: idToken }, data => {
-        // get firebase user id
-        const user_id = data.tokenData.sub
+  user.getIdToken(/* forceRefresh */ true)
+  .then(idToken => {
+    // Send token to your backend via HTTPS
+    $.post("/login", { token: idToken }, data => {
+      // get firebase user id
+      const user_id = data.tokenData.sub
 
-        // post the firebase user id to get corresponding user in postgres databse
-        $.post("/login", { token_id: user_id }, data => {
-          console.log(data)
-          // if result is fail, stop execution and show error message
-          if (data.result === "fail") {
-            const user = firebase.auth().currentUser
+      // post the firebase user id to get corresponding user in postgres databse
+      $.post("/login", { token_id: user_id }, data => {
+        console.log(data)
+        // if result is fail, stop execution and show error message
+        if (data.result === "fail") {
+          const user = firebase.auth().currentUser
 
-            // delete firebase unnecessary current user
-            user.delete().then(function() {
-              // User deleted.
+          // delete firebase unnecessary current user
+          user.delete().then(function() {
+            // User deleted.
 
-              $("#loginErrorMessage").text(data.message)
-              $("#loginErrorMessage").show()
-            })
-            return
-          }
-          // now ready to go to home page
-          window.location.replace("/")
-        }).fail(function(error) {
-          // Handle error
-          console.log("decode error")
-        })
+            $("#loginErrorMessage").text(data.message)
+            $("#loginErrorMessage").show()
+          })
+          return
+        }
+        // now ready to go to home page
+        window.location.replace("/authenticaton/home")
+      }).fail(function(error) {
+        // Handle error
+        console.log("decode error")
       })
     })
-    .catch(function(error) {
-      // Handle error
-      console.log("decode error")
-    })
+  })
+  .catch(function(error) {
+    // Handle error
+    console.log("decode error")
+  })
 }
 
-$(document).ready(function() {
-  // login
-  $("#loginForm").submit(event => {
-    // Stop the browser from submitting the form.
-    event.preventDefault()
-    console.log('loginform clg');
-    // hide error message
-    $("#loginErrorMessage").hide()
-
-    const email = event.target.email.value
-    const password = event.target.password.value
-
-    signInWithEmailAndPassword(email, password)
-  })
-
-  // create new user
+// create new user
+$(document).on('turbolinks:load', function() {
   $("#registerForm").submit(event => {
     // Stop the browser from submitting the form.
     event.preventDefault()
@@ -196,29 +159,7 @@ $(document).ready(function() {
     const password = event.target.password.value
 
     registerWithEmailAndPassword(name, email, password)
+    })
+  // The start method will wait until the DOM is loaded.
+  ui.start('#firebaseui-auth-container', uiConfig);
   })
-
-  // login with google account (google login button)
-  $("#google_login").click(() => {
-    // hide error message
-    $("#loginErrorMessage").hide()
-
-    const provider = new firebase.auth.GoogleAuthProvider()
-
-    firebase
-      .auth()
-      .signInWithPopup(provider)
-      .then(function(result) {
-        // The signed-in user info.
-        const user = result.user
-
-        verifyTokenAndGoToHome(user)
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        var errorMessage = error.message
-
-        console.log(errorMessage)
-      })
-  })
-})
