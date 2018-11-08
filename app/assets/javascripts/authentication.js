@@ -5,19 +5,19 @@ function registerWithEmailAndPassword(name, email, password) {
     .then(data => {
       const firebase_user_id = data.user.uid
 
-      // pass data to create new account
-      $.post(
-        "/authentication",
+      // pass data to local database to create new account
+      $.post("/authentication",
         {
-          token_id: firebase_user_id,
-          name: name,
+          uid: firebase_user_id,
+          username: name,
           email: email
         },
         data => {
           // now ready to go to home page
-          window.location.replace("/teams")
+          window.location.replace("/")
+          console.log(data);
         }
-      ).catch(error => {
+      ).fail(error => {
         console.log(error.message)
       })
     })
@@ -61,7 +61,7 @@ function verifyTokenAndGoToHome(user) {
         // get firebase user id
         const user_id = data.tokenData.sub
 
-        // post the firebase user id to get corresponding user in porstgers databse
+        // post the firebase user id to get corresponding user in postgres databse
         $.post("/login", { token_id: user_id }, data => {
           console.log(data)
           // if result is fail, stop execution and show error message
@@ -78,8 +78,8 @@ function verifyTokenAndGoToHome(user) {
             return
           }
           // now ready to go to home page
-          window.location.replace("/teams")
-        }).catch(function(error) {
+          window.location.replace("/")
+        }).fail(function(error) {
           // Handle error
           console.log("decode error")
         })
@@ -96,6 +96,7 @@ $(document).ready(function() {
   $("#loginForm").submit(event => {
     // Stop the browser from submitting the form.
     event.preventDefault()
+    console.log('loginform clg');
     // hide error message
     $("#loginErrorMessage").hide()
 
@@ -139,7 +140,7 @@ $(document).ready(function() {
 
         // pass data to create new account
         $.post(
-          "/authentication",
+          "/authentication/new",
           {
             token_id: firebase_user_id,
             name: name,
@@ -158,7 +159,7 @@ $(document).ready(function() {
               return
             }
             // now ready to go to home page
-            window.location.replace("/teams")
+            window.location.replace("/")
           }
         ).catch(error => {
           console.log(error.message)

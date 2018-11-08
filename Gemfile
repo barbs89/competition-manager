@@ -18,6 +18,8 @@ gem 'bootstrap-sass', '~> 3.3', '>= 3.3.7'
 # To verify Firebase token
 gem 'firebase_id_token', '~> 2.3'
 gem 'redis', '~> 4.0', '>= 4.0.3'
+# jQuery
+gem 'jquery-rails', '~> 4.3', '>= 4.3.3'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

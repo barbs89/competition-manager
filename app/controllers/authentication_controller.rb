@@ -5,7 +5,7 @@ class AuthenticationController < ApplicationController
     if params[:token_id]
 
       #get corresponding user data using token id
-      user = User.where(token_id: params[:token_id]).take
+      user = User.where(uid: params[:token_id]).take
 
       #user is found
       if user != nil
@@ -45,12 +45,12 @@ class AuthenticationController < ApplicationController
   end
 
   def create
-    token_id = params[:token_id]
-    name = params[:name]
+    uid = params[:uid]
+    username = params[:username]
     email = params[:email]
 
     begin
-    user = User.create(token_id: token_id,name: name,email: email)
+    user = User.create(uid: uid, username: username, email: email)
      # set user info in session
      session[:current_user] = user
      # return json data to js file
