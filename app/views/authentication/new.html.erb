@@ -1,0 +1,26 @@
+<h1>Registration</h1>
+
+<form id="registerForm" style="width:40%; margin:0 auto;">
+    <img class="mb-4" src="" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Sign up</h1>
+
+    <div id="registerErrorMessage" style="display:none;" class="alert alert-danger"> </div>
+
+    <label for="inputName" class="sr-only">User name</label>
+    <input type="text" name="name" id="inputName" class="form-control" placeholder="User name" required autofocus>
+
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" name="password" id="inputPassword" class="form-control mb-3" placeholder="Password" required>
+   
+    <button class="btn btn-info mb-3" type="submit">Sign up</button>
+
+    <div>
+    <%= link_to "Login", authentication_index_path %>
+    </div>
+    
+</form>
+
+<%= javascript_include_tag 'authentication.js' %>

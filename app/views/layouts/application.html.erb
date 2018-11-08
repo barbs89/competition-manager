@@ -5,11 +5,23 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Firebase site auth and external scripts -->
+    <meta name="google-site-verification" content="EV8XaWJLIAN4UWa0QCe9OOdr8iINFRMxk-yAxn6BCcc" />
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.3/firebase-auth.js"></script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.4.1/firebaseui.js"></script>
+    
+    <!-- Firebase locally stored scripts -->
+    <%= javascript_include_tag('config.js') %>
+
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
-    <%= yield %>
+    <div class="container">
+      <%= yield %>
+    </div>
   </body>
 </html>
